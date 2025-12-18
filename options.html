@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>バイアスチェッカー設定</title>
+  <style>
+    :root {
+      --bg-primary: #F0F9FF;
+      --bg-secondary: #E0F2FE;
+      --text-primary: #334155;
+      --text-secondary: #64748B;
+      --accent: #7DD3FC;
+      --accent-hover: #38BDF8;
+      --success: #A7F3D0;
+      --error: #FECACA;
+      --border: #BAE6FD;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg-primary: #0F172A;
+        --bg-secondary: #1E293B;
+        --text-primary: #E0F2FE;
+        --text-secondary: #94A3B8;
+        --accent: #38BDF8;
+        --accent-hover: #7DD3FC;
+        --success: #34D399;
+        --error: #F87171;
+        --border: #334155;
+      }
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Segoe UI", "Hiragino Sans", "Meiryo", sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      padding: 32px;
+    }
+    .container { max-width: 500px; margin: 0 auto; }
+    .header { margin-bottom: 32px; }
+    .header h1 { font-size: 24px; font-weight: 600; margin-bottom: 8px; }
+    .header p { font-size: 14px; color: var(--text-secondary); }
+    .card {
+      background: var(--bg-secondary);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 16px;
+    }
+    .card-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      padding-left: 12px;
+      border-left: 4px solid var(--accent);
+    }
+    .form-group { margin-bottom: 20px; }
+    .form-group:last-child { margin-bottom: 0; }
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 8px;
+      color: var(--text-secondary);
+    }
+    select, input[type="text"], input[type="password"] {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 14px;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      transition: all 0.2s ease;
+    }
+    select:focus, input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(125, 211, 252, 0.2);
+    }
+    .help-text {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 6px;
+    }
+    .help-text a { color: var(--accent); text-decoration: none; }
+    .help-text a:hover { text-decoration: underline; }
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #0F172A;
+      width: 100%;
+    }
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      transform: translateY(-1px);
+    }
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: var(--success);
+      color: #065F46;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      opacity: 0;
+      transition: all 0.3s ease;
+    }
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+    .toast.error {
+      background: var(--error);
+      color: #7F1D1D;
+    }
+    .toast.placeholder {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+    .divider { height: 1px; background: var(--border); margin: 16px 0; }
+    .api-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 8px;
+    }
+    .api-status .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--error);
+    }
+    .api-status .dot.active { background: var(--success); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>バイアスチェッカー設定</h1>
+      <p>ニュース記事の政治的バイアスを分析するためのAPI設定</p>
+    </div>
+    <div class="card">
+      <div class="card-title">API設定</div>
+      <div class="form-group">
+        <label for="api-select">使用するAPI</label>
+        <select id="api-select">
+          <option value="openai">OpenAI (GPT-4o-mini)</option>
+          <option value="gemini">Google Gemini 2.0</option>
+          <option value="claude">Anthropic Claude 3.5</option>
+        </select>
+      </div>
+      <div class="divider"></div>
+      <div class="form-group">
+        <label for="openai-api-key">OpenAI APIキー</label>
+        <input type="password" id="openai-api-key" placeholder="sk-...">
+        <p class="help-text"><a href="https://platform.openai.com/api-keys" target="_blank">OpenAI API Keys</a> から取得</p>
+        <div class="api-status" id="openai-status"><span class="dot"></span><span>未設定</span></div>
+      </div>
+      <div class="form-group">
+        <label for="gemini-api-key">Gemini APIキー</label>
+        <input type="password" id="gemini-api-key" placeholder="AIza...">
+        <p class="help-text"><a href="https://aistudio.google.com/app/apikey" target="_blank">Google AI Studio</a> から取得</p>
+        <div class="api-status" id="gemini-status"><span class="dot"></span><span>未設定</span></div>
+      </div>
+      <div class="form-group">
+        <label for="claude-api-key">Claude APIキー</label>
+        <input type="password" id="claude-api-key" placeholder="sk-ant-...">
+        <p class="help-text"><a href="https://console.anthropic.com/settings/keys" target="_blank">Anthropic Console</a> から取得</p>
+        <div class="api-status" id="claude-status"><span class="dot"></span><span>未設定</span></div>
+      </div>
+    </div>
+    <button class="btn btn-primary" id="save-btn">設定を保存</button>
+  </div>
+  <div class="toast" id="toast"></div>
+  <script src="options.js"></script>
+</body>
+</html>

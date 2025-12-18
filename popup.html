@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    :root {
+      /* ライトモード（デフォルト） */
+      --bg-primary: #F0F9FF;
+      --bg-secondary: #E0F2FE;
+      --text-primary: #334155;
+      --text-secondary: #64748B;
+      --accent: #7DD3FC;
+      --accent-hover: #38BDF8;
+      --success: #A7F3D0;
+      --error: #FECACA;
+      --warning: #FDE68A;
+      --border: #BAE6FD;
+      --left-color: #60A5FA;
+      --center-color: #94A3B8;
+      --right-color: #F87171;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg-primary: #0F172A;
+        --bg-secondary: #1E293B;
+        --text-primary: #E0F2FE;
+        --text-secondary: #94A3B8;
+        --accent: #38BDF8;
+        --accent-hover: #7DD3FC;
+        --success: #34D399;
+        --error: #F87171;
+        --warning: #FBBF24;
+        --border: #334155;
+        --left-color: #3B82F6;
+        --center-color: #64748B;
+        --right-color: #EF4444;
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      width: 320px;
+      min-height: 200px;
+      font-family: 'Segoe UI', 'Hiragino Sans', 'Meiryo', sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      padding: 16px;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header h1 {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .version {
+      font-size: 11px;
+      color: var(--text-secondary);
+      background: var(--bg-secondary);
+      padding: 2px 8px;
+      border-radius: 9999px;
+    }
+
+    .status {
+      background: var(--bg-secondary);
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 16px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      text-align: center;
+    }
+
+    .status.error {
+      background: var(--error);
+      color: #7F1D1D;
+    }
+
+    .status.loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .bias-display {
+      background: var(--bg-secondary);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+
+    .bias-bar-container {
+      margin-bottom: 16px;
+    }
+
+    .bias-bar {
+      height: 24px;
+      display: flex;
+      border-radius: 12px;
+      overflow: hidden;
+      background: var(--bg-primary);
+    }
+
+    .bias-bar .left {
+      background: linear-gradient(135deg, #60A5FA, #3B82F6);
+      transition: width 0.5s ease;
+    }
+
+    .bias-bar .center {
+      background: linear-gradient(135deg, #94A3B8, #64748B);
+      transition: width 0.5s ease;
+    }
+
+    .bias-bar .right {
+      background: linear-gradient(135deg, #F87171, #EF4444);
+      transition: width 0.5s ease;
+    }
+
+    .bias-labels {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 8px;
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+
+    .bias-scores {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .score-item {
+      text-align: center;
+      padding: 8px;
+      background: var(--bg-primary);
+      border-radius: 8px;
+    }
+
+    .score-item .label {
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-bottom: 4px;
+    }
+
+    .score-item .value {
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .score-item.left .value { color: var(--left-color); }
+    .score-item.center .value { color: var(--center-color); }
+    .score-item.right .value { color: var(--right-color); }
+
+    .score-item .indicator {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin: 0 auto 4px;
+    }
+
+    .score-item.left .indicator { background: var(--left-color); }
+    .score-item.center .indicator { background: var(--center-color); }
+    .score-item.right .indicator { background: var(--right-color); }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #0F172A;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--border);
+    }
+
+    .no-api-key {
+      text-align: center;
+      padding: 20px;
+    }
+
+    .no-api-key p {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>バイアスチェッカー</h1>
+    <span class="version" id="version">v1.0</span>
+  </div>
+
+  <div id="content">
+    <div class="status loading" id="status">
+      <div class="spinner"></div>
+      <span>分析中...</span>
+    </div>
+
+    <div class="bias-display" id="bias-display" style="display: none;">
+      <div class="bias-bar-container">
+        <div class="bias-bar">
+          <div id="left-bar" class="left" style="width: 0%"></div>
+          <div id="center-bar" class="center" style="width: 0%"></div>
+          <div id="right-bar" class="right" style="width: 0%"></div>
+        </div>
+        <div class="bias-labels">
+          <span>左派</span>
+          <span>中立</span>
+          <span>右派</span>
+        </div>
+      </div>
+
+      <div class="bias-scores">
+        <div class="score-item left">
+          <div class="indicator"></div>
+          <div class="label">左派</div>
+          <div class="value"><span id="left-score">0</span>%</div>
+        </div>
+        <div class="score-item center">
+          <div class="indicator"></div>
+          <div class="label">中立</div>
+          <div class="value"><span id="center-score">0</span>%</div>
+        </div>
+        <div class="score-item right">
+          <div class="indicator"></div>
+          <div class="label">右派</div>
+          <div class="value"><span id="right-score">0</span>%</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn btn-primary" id="refresh-btn">再分析</button>
+      <button class="btn btn-secondary" id="options-btn">設定</button>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
